@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+Paper/
+Icon*
+*.Rda
+*.Rds
+*.Rdata
+Data/TimeseriesAWAPer/
+Data/Qts/
+Data/HBVResultsR2V/
+Data/220HRS/

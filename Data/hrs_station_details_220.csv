@@ -1,0 +1,232 @@
+#,Australian Bureau of Meteorology,,,,,
+#,Hydrologic Reference Stations,,,,,
+#,,,,,,
+#,Dataset version:  May 2020,,,,,
+#,,,,,,
+#,For description of data owner codes see http://www.bom.gov.au/water/hrs/content/data_owners.csv,,,,,
+#,,,,,,
+#,For more information see http://www.bom.gov.au/water/hrs,,,,,
+#,,,,,,
+#,For copyright and licence information see http://www.bom.gov.au/water/hrs/copyright.shtml,,,,,
+#,,,,,,
+AWRC Station Number,Station Name,Latitude,Longitude,Jurisdiction,Catchment Area (km2),Data owner code
+410730,Cotter River at Gingera,-35.5917,148.82125,ACT,130,w00002
+410731,Gudgenby River at Tennent,-35.574851,149.06625,ACT,671.6,w00075
+410734,Queanbeyan River at Tinderry,-35.61375,149.3498186,ACT,563.7,w00002
+410705,Molonglo River at Burbong,-35.3367,149.31625,ACTNSW,508.6,w00075
+410761,Murrumbidgee River below Lobbs Hole Creek,-35.539928,149.10125,ACTNSW,5158,w00075
+204034,Henry River at Newton Boyd,-29.7635,152.214,NSW,398.9,w00077
+206014,Wollomombi River at Coninside,-30.47635697,152.028857,NSW,377.4,w00077
+206018,Apsley River at Apsley Falls,-31.05125,151.76625,NSW,851.9,w00077
+208007,Nowendoc River at Nowendoc,-31.51625,151.71625,NSW,221.1,w00077
+208009,Barnard River at Barry,-31.57995,151.31495,NSW,152.1,w00077
+210006,Goulburn River at Coggan,-32.34364471,150.1013553,NSW,3402,w00077
+210011,William River at Tillegra,-32.31945,151.68805,NSW,196.4,w00077
+211008,Jigadee Creek at Avondale,-33.07215,151.47035,NSW,64.2,w00077
+212209,Nepean River at Maguires Crossing,-34.476507,150.53375,NSW,67.4,w00231
+212260,Kowmung River at Cedar Ford,-33.94734,150.24375,NSW,713,w00231
+215002,Shoalhaven River at Warri ,-35.3407,149.7393,NSW,1382,w00077
+215004,Corang River at Hockeys,-35.1471,150.0329,NSW,165.6,w00077
+215207,Shoalhaven river at Fossickers Flat,-34.8217,150.1833,NSW,4660,w00231
+216002,Clyde River at Brooman,-35.4681,150.23625,NSW,859,w00077
+216004,Currambene Creek at Falls Creek,-34.9705,150.598,NSW,95.7,w00077
+218001,Tuross River at Tuross Vale,-36.26465,149.51035,NSW,90.6,w00077
+219001,Rutherford Creek at Brown Mountain,-36.59315,149.44185,NSW,14.4,w00077
+401009,Maragle Creek at Maragle,-35.9266,148.1009,NSW,217.3,w00077
+401012,Murray River at Biggara,-36.31875,148.0519476,NSW,1257,w00077
+401015,Bowna Creek at Yambla,-35.91625,146.975091,NSW,290.1,w00077
+410057,Goobarragandra River at Lacmalac,-35.32905,148.34845,NSW,667.9,w00077
+410061,Adelong Creek at Batlow Road,-35.33165,148.06915,NSW,146.1,w00077
+412028,Abercrombie River at Abercrombie ,-33.9548,149.3252,NSW,2631,w00077
+412050,Crookwell River at Narrawa North,-34.31125,149.167269,NSW,761.9,w00077
+412066,Abercrombie River at Hadley No.2,-34.1128,149.5978,NSW,1630,w00077
+416003,Tenterfield Creek at Clifton,-29.02915,151.72665,NSW,552.6,w00077
+416008,Beardy River at Haystack,-29.21838,151.38338,NSW,908,w00077
+418005,Copes Creek at Kimberley,-29.9168215,151.1143215,NSW,249.3,w00077
+418014,Gwydir River at Yarrowyck,-30.4674403,151.3624403,NSW,834.6,w00077
+419005,Namoi River at North Cuerindi,-30.6784993,150.7784993,NSW,2532,w00077
+424002,Paroo River at Willarra Crossing,-29.23875,144.455339,NSW,35239,w00077
+G0010005,Ranken River at Soudan Homestead,-20.046901,137.01875,NT,6390,w00067
+G0050115,Hugh River at South Road Crossing,-24.35332906,133.4333291,NT,3324,w00067
+G8110004,East Baines River at Victoria Highway,-15.76625,130.03375,NT,2443,w00067
+G8110016,Upper Victoria River at Wave Hill Police Station,-17.44865416,130.8388458,NT,4715,w00067
+G8140001,Katherine River at Railway Bridge,-14.4633,132.2567,NT,8357,w00067
+G8140040,Daly River at Mount Nancar,-13.83085,130.73585,NT,47652,w00067
+G8140161,Green Ant Creek at Tipperary,-13.7375,131.1025,NT,415.5,w00067
+G8150018,Elizabeth River at Stuart Highway,-12.60605,131.07355,NT,95.6,w00067
+G8170002,Adelaide River at Railway Bridge,-13.24125,131.1083,NT,638.4,w00067
+G8190001,West Alligator River at Upstream Arnhem Highway,-12.7911,132.1739,NT,245.8,w00067
+G8200045,South Alligator River at El Sherana ,-13.52455,132.51955,NT,1231,w00067
+G8210010,East Alligator River at 12 Deg 43 Minutes South,-12.71735,133.33235,NT,2398,w00067
+G9030124,Daly Waters Creek at Daly Waters,-16.2598,133.37375,NT,312.6,w00067
+G9030250,Roper River at Red Rock,-14.69527637,134.4197236,NT,43476,w00067
+G9070142,McArthur River Upstream of Bailey's Grave,-16.778,135.75625,NT,4261,w00067
+102101A,Pascoe River at Fall Creek,-12.88045,142.98295,QLD,647.7,w00066
+104001A,Stewart River at Telegraph Road,-14.16875,143.394002,QLD,469,w00066
+105101A,Normanby River at Battle Camp,-15.2812,144.8387,QLD,2306,w00066
+105102A,Laura River at Coalseam Creek,-15.6133,144.48375,QLD,1285,w00066
+105105A,East Normanby River at Development Road,-15.771166,145.01375,QLD,296.8,w00066
+107001B,Endeavour River at Flaggy,-15.42375,145.0672971,QLD,338,w00066
+108002A,Daintree River at Bairds,-16.17875,145.281861,QLD,907.3,w00066
+108003A,Bloomfield River at China Camp,-15.988163,145.286837,QLD,263,w00066
+112002A,Fisher Creek at Nerada,-17.564487,145.908013,QLD,16.2,w00066
+112102A,Liverpool Creek at Upper Japoonvale,-17.71520831,145.9052083,QLD,77.8,w00066
+113004A,Cochable Creek at Powerline,-17.73961111,145.62875,QLD,95.5,w00066
+116006B,Herbert River at Abergowrie,-18.49125,145.922213,QLD,7487,w00066
+116010A,Blencoe Creek at Blencoe Falls,-18.2044,145.5369,QLD,223.7,w00066
+116011A,Millstream River at Ravenshoe,-17.60505,145.47745,QLD,90.1,w00066
+116012A,Cameron Creek at 8.7KM,-18.06449,145.34199,QLD,365.2,w00066
+116013A,Millstream river at Archer Creek,-17.65125,145.3410684,QLD,309.3,w00066
+116014A,Wild River at Silver Valley,-17.6266,145.29875,QLD,587.6,w00066
+116015A,Blunder Creek at Wooroora,-17.73625,145.437374,QLD,127.4,w00066
+121001A,Don River at Ida Creek,-20.289096,148.115904,QLD,599.9,w00066
+122004A,Gregory river at Lower Gregory,-20.300381,148.547119,QLD,45.6,w00066
+126003A,Carmila Creek at Carmila,-21.915676,149.39875,QLD,86.3,w00066
+136202D,Barambah Creek at Litzows,-26.301221,152.043779,QLD,646.6,w00066
+136203A,Barker Creek at Brooklands,-26.73635469,151.8136453,QLD,312.9,w00066
+136208A,Boonara Creek at Ettiewyn,-25.902786,151.84375,QLD,1399,w00066
+137101A,Gregory River at Burrum Highway,-25.0866455,152.2408545,QLD,453.2,w00066
+137201A,Isis River at Bruce Highway,-25.2662455,152.3687455,QLD,449.3,w00066
+138004B,Munna Creek at Marodian,-25.903597,152.348597,QLD,1190,w00066
+138009A,Tinana Creek at Tagigan Road,-26.07875,152.7838197,QLD,101.8,w00066
+138010A,Wide Bay Creek at Kilkivan,-26.079414,152.22125,QLD,352.8,w00066
+138113A,Kandanga Creek at Hygait,-26.389788,152.644788,QLD,171.3,w00066
+143009A,Brisbane River at Gregors Creek,-26.99638563,152.40875,QLD,3876,w00066
+143110A,Bremer River at Adams Bridge,-27.82773252,152.51125,QLD,126.5,w00066
+143303A,Stanley River at Peachester,-26.83875,152.8403,QLD,101.7,w00066
+145010A,Running Creek at 5.8KM Deickmans Bridge,-28.24625,152.89125,QLD,129,w00066
+145011A,Teviot Brook at Croftby,-28.147989,152.57125,QLD,85.1,w00066
+145018A,Burnett Creek at Up Stream Maroon Dam,-28.219112,152.608388,QLD,82.4,w00066
+145101D,Albert River at Lumeah Number 2,-28.05297,153.04547,QLD,165.9,w00066
+145107A,Canungra Creek at Main Rd Bridge,-27.99625,153.15875,QLD,102.3,w00066
+146010A,Coomera River at Army Camp,-28.0256055,153.1931055,QLD,96.6,w00066
+146012A,Currumbin Creek at Nicolls Bridge,-28.17875,153.423012,QLD,29,w00066
+146014A,Back Creek at Beechmont,-28.122867,153.189633,QLD,6.6,w00066
+146095A,Tallebudgera Creek at Tallebudgera Ck Rd,-28.149219,153.40375,QLD,55.8,w00066
+422202B,Dogwood Creek at Gilweir,-26.70904167,150.1790417,QLD,2882,w00066
+422306A,Swan Creek at Swanfels,-28.1643325,152.2831675,QLD,82.6,w00066
+422313B,Emu Creek at Emu Vale,-28.2283335,152.2266665,QLD,153.1,w00066
+422319B,Dalrymple Creek at Allora,-28.03625,152.014256,QLD,255.5,w00066
+422321B,Spring Creek at Killarney,-28.35375,152.333067,QLD,31.6,w00066
+422334A,Kings Creek at Aides Bridge,-27.92625,151.8624333,QLD,648.1,w00066
+422394A,Condamine River at Elbow Valley,-28.371363,152.141363,QLD,328.4,w00066
+424201A,Paroo River at Caiwarro,-28.689072,144.785928,QLD,22885,w00066
+912101A,Gregory River at Gregory Downs,-18.6429,139.2521,QLD,12652,w00066
+912105A,Gregory River at Riversleigh No.2,-18.97125,138.803403,QLD,11440,w00066
+915011A,Porcupine Creek at Mt Emu Plains,-20.1775,144.52375,QLD,552.3,w00066
+917107A,Elizabeth Creek at Mount Surprise,-18.13375,144.3064833,QLD,528.1,w00066
+919003A,Mitchell River at O.K. Bridge,-16.4720135,144.2904865,QLD,7734,w00066
+919201A,Palmer River at Goldfields,-16.1072295,144.7777705,QLD,533.4,w00066
+919309A,Walsh River at Trimbles Crossing,-16.54485,143.78485,QLD,8638,w00066
+922101B,Coen river at Racecourse,-13.95625,143.175,QLD,170,w00066
+925001A,Wenlock river at Moreton,-12.45375,142.6377,QLD,3290,w00066
+926002A,Dulhunty River at Dougs Pad,-11.83125,142.42,QLD,333.3,w00066
+A0020101,Diamantina River at Birdsville,-25.90875,139.3667,SA,119034,w00078
+A0030501,Cooper Creek at Cullyamurra Water Hole,-27.70125,140.8433,SA,232846,w00078
+A2390519,Mosquito Creek at Struan,-37.09375,140.776,SA,1550,w00209
+A2390523,Stony Creek at Woakwine Range,-37.70343,140.3622,SA,485.1,w00209
+A2390531,Morambro Creek at Bordertown-Naracoorte Road Bridge,-36.68875,140.6602382,SA,410.6,w00209
+A5030502,Scott Creek at Scott Bottom,-35.099129,138.673371,SA,29,w00078
+A5040517,First Creek at Waterfall Gully,-34.9708,138.6808,SA,5.3,w00003
+A5040523,Sixth Creek at Castambul,-34.87295,138.75295,SA,47.7,w00003
+A5050517,North Para River at Penrice,-34.46375,139.0584,SA,120.5,w00078
+A5130501,Rocky River upstream Gorge Falls,-35.95375,136.6983,SA,187.4,w00078
+312061,Hellyer River at Guilford Junction,-41.41875,145.67044,TAS,100.8,w00129
+318076,North Esk River at Ballroom,-41.49375,147.384339,TAS,379.8,w00072
+308145,Franklin River at Mt Fincham Track,-42.24125,145.767642,TAS,775.3,w00129
+315450,Forth River at U/S Lemonthyme,-41.6117,146.13125,TAS,309.6,w00129
+307473,Davey River at D/S Crossing Rv ,-43.14125,145.95,TAS,698.6,w00072
+304497,Nive River at Gowan Brae,-42.03125,146.419606,TAS,174,w00129
+304499,Tyenna River at Newbury,-42.70695183,146.7105482,TAS,210.2,w00072
+308799,Collingwood river at B/L Alma,-42.16375,145.92875,TAS,271.1,w00129
+302214,Ansons River at Downstream of Big Boggy Creek,-41.047088,148.21625,TAS,229.9,w00072
+305202,Snug Rivulet at U/S Snug Tiers Rd Bridge,-43.07076,147.23674,TAS,18.3,w00072
+314207,Leven River at at Bannons Bridge,-41.25125,146.090026,TAS,499.3,w00072
+314213,Black River at South Forest,-40.8725395,145.2975395,TAS,318.5,w00072
+221207,Errinundra River at Errinundra,-37.44713,148.91375,VIC,159.2,w00074
+221210,Genoa River at The Gorge,-37.41699,149.51949,VIC,844.1,w00074
+222206,Buchan River at Buchan,-37.49458,148.17458,VIC,850.2,w00074
+222213,Suggan Buggan River at Suggan Buggan,-36.95423808,148.3267381,VIC,361.4,w00074
+223202,Tambo River at Swifts Creek,-37.26772,147.72875,VIC,899.3,w00074
+224206,Wonnangatta River at Crooked River,-37.40625,147.08875,VIC,1100,w00074
+224213,Dargo River at Lower Dargo Rd,-37.49375,147.27125,VIC,669.7,w00074
+224214,Wentworth River at Tabberabbera,-37.494565,147.392935,Vic,438.9,w00074
+225020A,South Cascade Creek at Thomson Valley Road,-37.83322939,146.3542706,VIC,9.6,w00151
+225110A,Jordan River at D/S Johnsons Creek,-37.68352468,146.3185247,VIC,132.1,w00151
+225219,Macalister River at Glencairn,-37.5161,146.56625,VIC,570.4,w00074
+226220,Loch River at Noojee,-37.866515,146.006515,VIC,101.8,w00074
+226222,Latrobe River at Near Noojee,-37.88125,145.89301,VIC,65.3,w00074
+226407,Morwell River at Boolarra,-38.40743,146.30493,VIC,115.9,w00074
+227225,Tarra River at Fischers,-38.46875,146.5551106,VIC,20.7,w00074
+227226,Tarwin River East Branch  at Dumbalk North,-38.499415,146.160585,VIC,129.7,w00074
+227227,Wilkur Creek at Leongatha,-38.39375,145.95735,VIC,105.8,w00074
+229650B,Aldermans Creek at RD 32,-37.72142212,145.94125,VIC,23.9,w00151
+229661A,Walshes Creek at RD 1,-37.63375,145.9268,VIC,54.5,w00151
+230210,Saltwater Creek at Bullengarook,-37.471805,144.524305,VIC,38.7,w00074
+231213,Lerderderg River at Sardine Creek O'brien Crossing,-37.49654621,144.36125,VIC,152.1,w00074
+235205,Arkins Creek West Branch at Wyelangta,-38.63824,143.44375,VIC,4.5,w00074
+236213,Mount Emu Creek at Mena Park,-37.53112831,143.4663717,VIC,448.3,w00074
+238208,Jimmy Creek at Jimmy Creek,-37.37375,142.50816,VIC,23.3,w00074
+401203,Mitta Mitta River at Hinnomunjie,-36.94763174,147.6073683,VIC,1519,w00074
+401208,Cudgewa Creek at Berringama,-36.21375,147.67782,VIC,351.1,w00074
+401210,Snowy Creek at Below Granite Flat,-36.56845402,147.413454,VIC,415.7,w00074
+401212,Nariel Creek at Upper Nariel,-36.446035,147.828535,VIC,251.6,w00074
+401216,Big River at Jokers Creek,-36.932475,147.472475,VIC,356.8,w00074
+401217,Gibbo River at Gibbo Park,-36.75616392,147.7088361,VIC,389.8,w00074
+402204,Yackandandah Creek at Osbornes Flat,-36.30375,146.9060831,VIC,284.1,w00074
+402206,Running Creek at Running Creek,-36.540185,147.044815,VIC,128.1,w00074
+402213,Kinchington Creek at Osbornes Flat,-36.31636,146.89375,VIC,123.8,w00074
+402217,Flaggy Creek at Myrtleford Road Bridge,-36.386265,146.876265,VIC,26.3,w00074
+403213,Fifteen Mile Creek at Greta South,-36.61953,146.24375,VIC,230.9,w00074
+403214,Happy Valley Creek at Rosewhite,-36.57756,146.81994,VIC,138,w00074
+403217,Rose River at Matong North,-36.824275,146.583225,VIC,180.3,w00074
+403221,Reedy Creek at Woolshed,-36.31125,146.60125,VIC,205.5,w00074
+403222,Buffalo River at Abbeyard,-36.91068,146.70125,VIC,415,w00074
+403226,Boggy Creek at Angleside,-36.60562,146.36188,VIC,108.4,w00074
+403232,Morses Creek at Wandiligong,-36.75154,146.97875,VIC,124.1,w00074
+404207,Holland Creek at Kelfeera,-36.611525,146.059025,VIC,448,w00074
+405205,Murrindindi River at Murrindindi above Colwells,-37.4138538,145.5638538,VIC,105.8,w00074
+405209,Acheron River at Taggerty,-37.31772866,145.71375,VIC,629.4,w00074
+405215,Howqua River at Glen Esk,-37.22964985,146.2071498,VIC,374,w00074
+405217,Yea River at Devlins Bridge,-37.38375,145.47319,VIC,360.6,w00074
+405218,Jamieson River at Gerrang Bridge,-37.29125,146.1876,VIC,364.2,w00074
+405219,Goulburn River at Dohertys,-37.330415,146.129585,VIC,700.2,w00074
+405226,Pranjip Creek at Moorlim,-36.621015,145.306485,VIC,749.4,w00074
+405227,Big River at Jamieson,-37.366955,146.056955,VIC,626.9,w00074
+405238,Mollison Creek at Pyalong,-37.12049,144.85701,VIC,164.1,w00074
+405245,Ford Creek at Mansfield,-37.03875,146.05375,VIC,115.4,w00074
+405248,Major Creek at Graytown,-36.85375,144.9146,VIC,287.6,w00074
+405251,Brankeet Creek at Ancona,-36.96886,145.78375,VIC,121.8,w00074
+405263,Goulburn River at U/S of Snake Creek Junction,-37.462845,146.247155,VIC,328.9,w00074
+405264,Big River at D/S of Frenchman Creek Junction,-37.52125,146.07596,VIC,335.4,w00074
+405274,Home Creek at Yarck,-37.10625,145.60513,VIC,186.7,w00074
+406208,Campaspe River at Ashborne,-37.38787,144.45125,VIC,37.6,w00074
+406213,Campaspe River at Redesdale,-37.01645858,144.5389586,VIC,633.8,w00074
+406214,Axe Creek at Longlea,-36.77406,144.42844,VIC,237,w00074
+406224,Mount Pleasant Creek at Runnymede,-36.54625,144.6373,VIC,246.3,w00074
+407214,Creswick Creek at Clunes,-37.29668,143.78875,VIC,299.9,w00074
+407215,Loddon River at Newstead,-37.10875,144.05875,VIC,1028,w00074
+407220,Bet Bet Creek at Norwood,-36.99375,143.64431,VIC,361.3,w00074
+407230,Joyces Creek at Strathlea,-37.162125,143.960375,VIC,156,w00074
+407253,Piccaninny Creek at Minto,-36.4519,144.4694,VIC,652.1,w00074
+408200,Avoca River at Coonooer,-36.4379661,143.29875,VIC,2677,w00074
+408202,Avoca River at Amphitheatre,-37.18198279,143.4055172,VIC,82.6,w00074
+415207,Wimmera River at Eversley,-37.185295,143.184705,VIC,304.5,w00074
+415226,Richardson River at Carrs Plains,-36.74375,142.7872,VIC,124.9,w00074
+415237,Concongella Creek at Stawell,-37.026325,142.821325,VIC,244.2,w00074
+604053,Kent River at Styx Junction,-34.8882125,117.0867875,WA,1786,w00076
+606001,Deep River at Teds Pool,-34.7650475,116.6175475,WA,473.7,w00076
+606002,Weld River at Wattle Block,-34.6938678,116.5188678,WA,73.1,w00076
+606185,Shannon River at Dog Pool,-34.76479575,116.3772957,WA,378.8,w00076
+607155,Dombakup Brook at Malimup Track,-34.57875,115.9722784,WA,115.7,w00076
+608002,Carey Brook at Staircase Road,-34.39189222,115.8431078,WA,48.3,w00076
+610008,Margaret River North at Whicher Range,-33.80625,115.443598,WA,14.1,w00076
+613002,Harvey River at Dingo Road,-33.08625,116.03875,WA,148,w00076
+613146,Clarke Brook at Hillview Farm,-32.99875,115.92196,WA,18.7,w00076
+614044,Yarragil Brook at Yarragil Formation,-32.8120035,116.1545035,WA,80,w00076
+616002,Darkin River at Pine Plantation,-32.06875,116.292746,WA,641.6,w00076
+616013,Helena River  at Ngangaguringuring,-31.93875,116.403203,WA,316.2,w00076
+616065,Canning River at Glen Eagle,-32.227836,116.172164,WA,536.9,w00076
+803003,Fletcher River at Dromedary,-17.12886331,124.9886367,WA,65.4,w00076
+804001,Isdell River at Dales Yard,-17.00875,125.426965,WA,1829,w00076
+809310,Ord River at Bedford Downs,-17.42547077,127.6004708,WA,550.7,w00076

@@ -1,13 +1,5 @@
 # Functions
 
-decimalplaces <- function(x) {
-  if (abs(x - round(x)) > .Machine$double.eps^0.5) {
-    nchar(strsplit(sub('0+$', '', as.character(x)), ".", fixed = TRUE)[[1]][[2]])
-  } else {
-    return(0)
-  }
-}
-
 # Standard error
 std = function(x) sd(x)/sqrt(length(x))
 
@@ -18,7 +10,7 @@ S_pl_int = function(Q, a, b) {
 }
 # Polynomial
 S_poly_int = function(Q, c1, c2, c3) {
-  return( 1/( exp(c1) * Q^(c2-1) * Q^(c3*log(Q)) ) )
+  return(  1 / exp( c1 + (c2-1)*log(Q) + (c3)*log(Q)^2 ) ) 
 }
 
 S_Q = function(Q, a, b) {
@@ -38,6 +30,11 @@ S = function(Q, a, b, minQ) {
 # dQdt
 dQdt_pl = function(a,b,Q) return(a*Q^b)
 dQdt_poly = function(Q, c1, c2, c3) return(exp(c1 + c2*log(Q) + c3*(log(Q)^2)))
+
+gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
 
 # Binning as described in Kirchner 2009
 kirchnerBin = function(x) {
@@ -71,7 +68,7 @@ kirchnerBin = function(x) {
       lRange = diff(range(Qlog[i:j]))
     }
     
-    # Calculate the mean the mean and standard error of dQ for those values of Q
+    # Calculate the mean and standard error of dQ for those values of Q
     dQmean = abs(mean(tmp$`-dQ`[i:j]))
     dQstd  = std(tmp$`-dQ`[i:j])
     
@@ -103,7 +100,7 @@ kirchnerBin = function(x) {
 
 # Function to calculate the storage-discharge relationship at the hourly level
 # Requires that you have filtered to between sunrise and sunset
-storageDischargeHourly = function(df, area=3.6) {
+storageDischargeHourly = function(df, area=3.6, min_Q, min_dQ) {
   # df: a table with Datetime, Q and P 
   # area: area of catchment if the data supplied is in m3/s
   
@@ -111,24 +108,28 @@ storageDischargeHourly = function(df, area=3.6) {
   n = nrow(df)
   Qt = df$Q
   # Time series of Qt-1
-  Qtm1 = c(NaN, Qt[1:(n-1)])
-  # Vector of dates
+  Qtm1 = c(NA, Qt[1:(n-1)])
+  # Vector of datetimes
   Dt = df$Datetime
-  # Determine dQ, dt and Qavg. dt should always be 1 hour
-  round = 6
-  pdf = df %>% 
-    mutate(`-dQ`= Qtm1-Qt,
-           dt   = c(NaN, diff(Dt)),
-           Qavg = ((Qtm1 + Qt)/2)) %>% 
-    mutate(`-dQ` =(`-dQ`*3.6/area),
-           Q = (Q*3.6/area),
-           Qavg = (Qavg*3.6/area)) %>% 
-    filter(month(Date)>=5 & month(Date)<=9) %>% 
-    filter(abs(`-dQ`) > (0.001 * 3.6/147))
+  # Vector of datetimes Dt-1
+  Dtm1 = c(as_datetime(NA), Dt[1:(n-1)])
+  
+  # Determine dQ, dt and Qavg. dt should always be 1 day
+  pdf = df %>%
+    mutate(`-dQ` = Qtm1 - Qt,
+           dt    = -as.integer(Dtm1-Dt),
+           Qavg  = (Qtm1 + Qt)/2) %>%
+    mutate(`-dQ` = (`-dQ`*3.6/area),
+           Q     = (Q*3.6/area),
+           Qavg  = (Qavg*3.6/area)) %>% 
+    filter(Qavg > (min_Q*3.6/area),
+           `-dQ` >= (min_dQ * 3.6/area))
+  
   
   pHours = which(pdf$P>0)
   pFilter = sapply(-7:2, function(x) x+pHours) %>% 
     as.vector() %>% unique()
+  
   pFilter = pFilter[pFilter>=1 & pFilter<=nrow(pdf)]
   # Filter
   fdf = pdf %>% 
@@ -148,7 +149,7 @@ storageDischargeHourly = function(df, area=3.6) {
   # Filter using Kirchner test criterion std.error(-dQ/dt) <= mean(dQ/dt)/2
   fdfBin = fdf %>% 
     group_by(Bin) %>% 
-    summarise(Qmean  = mean(Qavg),
+    summarise(Qmean = mean(Qavg),
               Qstd   = std(Qavg),
               dQmean = mean(`-dQ`),
               dQstd  = std(`-dQ`),
@@ -177,11 +178,17 @@ storageDischargeHourly = function(df, area=3.6) {
   pl_p = ggplot() +
     geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
     geom_point(data=fdfBin, aes(Qmean, dQmean), col='red', size=0.5) + 
-    labs(y='ln -dQdt (mm/hr)', x='ln Q (mm/hr)') +
     geom_line(aes(exp(pwl_dQdt$model$`log(Qmean)`), exp(pwl_dQdt$fitted.values)), col='green') +
-    scale_x_continuous(trans='log', breaks=c(0.001,0.1,1,10)) + scale_y_continuous(trans='log', breaks=c(0.001, 0.01, 0.1, 1)) +
+    labs(y=expression(ln~-dQdt~(mm.hr^-1)),
+         x=expression(ln~Q~(mm.hr^-1))) +
+    scale_x_continuous(trans='log', 
+                       labels = scales::trans_format("log", 
+                                                     scales::math_format(10^.x))) +
+    scale_y_continuous(trans='log',
+                       labels = scales::trans_format("log", 
+                                                     scales::math_format(10^.x))) +
     theme_bw() +
-    ggtitle(pl_p_title)
+    ggtitle(pl_p_title) 
   
   poly_p_tile = paste0('ln(-dQ/dt) = ',round(c1, 2),' + ',
                        round(c2, 2), '.ln(Q) + ', round(c3, 2), '.ln(Q)^2, ',
@@ -190,12 +197,50 @@ storageDischargeHourly = function(df, area=3.6) {
   poly_p = ggplot() +
     geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
     geom_point(data=fdfBin, aes(Qmean, dQmean), col='red', size=0.5) + 
-    labs(y='ln -dQdt (mm/hr)', x='ln Q (mm/hr)') +
-    geom_line(aes(exp(pwl_dQdt$model$`log(Qmean)`), exp(pwl_dQdt$fitted.values)), col='green') +
-    scale_x_continuous(trans='log', breaks=c(0.001,0.1,1,10)) + scale_y_continuous(trans='log', breaks=c(0.001, 0.01, 0.1, 1)) +
+    geom_line(aes(exp(ln_dQdt$model$`log(Qmean)`), exp(ln_dQdt$fitted.values)), col='green') +
+    labs(y=expression(ln~-dQdt~(mm.hr^-1)),
+         x=expression(ln~Q~(mm.hr^-1))) +
+    scale_x_continuous(trans='log', 
+                       labels = scales::trans_format("log", 
+                                                     scales::math_format(10^.x))) +
+    scale_y_continuous(trans='log',
+                       labels = scales::trans_format("log", 
+                                                     scales::math_format(10^.x))) +
     theme_bw() +
     ggtitle(poly_p_tile)
   
+  combined_p =   poly_p = ggplot() +
+    geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
+    geom_point(data=fdfBin, aes(Qmean, dQmean), col=gg_color_hue(3)[1], size=0.5) + 
+    geom_line(aes(exp(pwl_dQdt$model$`log(Qmean)`), exp(pwl_dQdt$fitted.values), col='PL')) +
+    geom_line(aes(exp(ln_dQdt$model$`log(Qmean)`), exp(ln_dQdt$fitted.values), col='Poly')) +
+    labs(y=expression(ln~-dQdt~(mm.hr^-1)),
+         x=expression(ln~Q~(mm.hr^-1))) +
+    scale_x_continuous(trans='log', 
+                       labels = scales::trans_format("log", 
+                                                     scales::math_format(10^.x))) +
+    scale_y_continuous(trans='log',
+                       labels = scales::trans_format("log", 
+                                                     scales::math_format(10^.x))) +
+    theme_bw() +
+    scale_colour_manual(
+      values = c('PL' = gg_color_hue(3)[2], 'Poly' = gg_color_hue(3)[3]),
+      labels = c(
+        substitute(paste("ln(-dQ/dt) = ", a, ' + ', b, 'ln(Q), ', R^2,' = ',r2),
+                   list(a=round(a,2),
+                        b=round(b,2),
+                        r2=round(summary(pwl_dQdt)$adj.r.squared,2))),
+        substitute(paste("ln(-dQ/dt) = ", c1, ' + ', c2, 'ln(Q) + ', c3, ln(Q)^2,
+                         ', ', R^2,' = ',r2),
+                   list(c1=round(c1,2),
+                        c2=round(c2,2),
+                        c3=round(c3,2),
+                        r2=round(summary(ln_dQdt)$adj.r.squared,2)))
+      )
+    ) +
+    theme(legend.title = element_blank(),
+          legend.position = c(0.01,0.99),
+          legend.justification = c(0,1))
   
   out = list(fdf=fdf,
              fdfBin=fdfBin,
@@ -206,7 +251,10 @@ storageDischargeHourly = function(df, area=3.6) {
              poly_p = poly_p,
              c1 = c1,
              c2 = c2,
-             c3 = c3)
+             c3 = c3,
+             combined_p = combined_p,
+             pl_lm = pwl_dQdt,
+             poly_lm = ln_dQdt)
   return(out)
 }
 
@@ -233,8 +281,7 @@ storageDischargeDaily  = function(df, area=86.4) {
     mutate(`-dQ` = (`-dQ`*86.4/area),
            Q     = (Q*86.4/area),
            Qavg  = (Qavg*86.4/area)) %>%
-    filter(abs(`-dQ`) >= (0.001 * 86.4/area)) %>% 
-    filter(month(Date)>=5 & month(Date)<=9)
+    filter(abs(`-dQ`) >= (0.001 * 86.4/area))
   
   pFilter = unique((c(which(pdf$P>0), which(pdf$P>0)+1)))
   
@@ -243,8 +290,8 @@ storageDischargeDaily  = function(df, area=86.4) {
     slice(-pFilter) %>%
     filter(!is.na(P),
            !is.na(Qavg),
-           QC_Q %in% c(10),
-           QC_P %in% c(10),
+           QC_Q %in% c(1,2),
+           QC_P %in% c(1,2),
            dt==1,
            Qavg > 0) 
   # Binning using the Kirchner method
@@ -269,7 +316,7 @@ storageDischargeDaily  = function(df, area=86.4) {
   c3 = ifelse(summary(ln_dQdt)$coefficients[3,4] < 0.1,
               unname(ln_dQdt$coefficients[3]),
               0)
-
+  
   # Power law function
   # ln(-dQ/dt) = -dQ/dt = a*Q^b
   pwl_dQdt = lm(log(dQmean)~log(Qmean), data=fdfBin %>% filter(dQmean>0), weights = 1/(log(Qstd)^2))
@@ -291,7 +338,7 @@ storageDischargeDaily  = function(df, area=86.4) {
   poly_p_tile = paste0('ln(-dQ/dt) = ',round(c1, 2),' + ',
                        round(c2, 2), '.ln(Q) + ', round(c3, 2), '.ln(Q)^2, ',
                        'R2 = ', round(summary(pwl_dQdt)$adj.r.squared,2))
-
+  
   poly_p = ggplot() +
     geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
     geom_point(data=fdfBin, aes(Qmean, dQmean), col='red', size=0.5) +
@@ -300,8 +347,8 @@ storageDischargeDaily  = function(df, area=86.4) {
     scale_x_continuous(trans='log', breaks=c(0.001,0.1,1,10)) + scale_y_continuous(trans='log', breaks=c(0.001, 0.01, 0.1, 1)) +
     theme_bw() +
     ggtitle(poly_p_tile)
-
-
+  
+  
   out = list(fdf=fdf,
              fdfBin=fdfBin,
              a = a,
@@ -337,9 +384,7 @@ storageDischargeDaily_pl  = function(df, area=86.4) {
            Q     = Q*86.4/area,
            Qavg  = Qavg*86.4/area)
   
-  # pFilter = unique((c(which(pdf$P>0), which(pdf$P>0)+1)))
-  # pFilter = unique((c(which(pdf$P>0), which(pdf$P>0)-1)))
-  pFilter = which(pdf$P > 0)
+  pFilter = unique((c(which(pdf$P>0), which(pdf$P>0)+1)))
   
   # Filter
   fdf = pdf %>% 
@@ -363,7 +408,7 @@ storageDischargeDaily_pl  = function(df, area=86.4) {
               .groups = 'drop') %>% 
     filter(!is.na(Bin))
   
-
+  
   # Power law function
   # ln(-dQ/dt) = -dQ/dt = a*Q^b
   pwl_dQdt = lm(log(dQmean)~log(Qmean), data=fdfBin %>% filter(dQmean>0), weights = 1/(log(Qstd)^2))

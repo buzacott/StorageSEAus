@@ -12,3 +12,15 @@ Data/TimeseriesAWAPer/
 Data/Qts/
 Data/HBVResultsR2V/
 Data/220HRS/
+Data/Dep/
+Dep/
+HBV_cal_plots/
+HBV_cal_scripts/
+Data/HBVResultsR2VWeekly
+Data/HBVResultsR2V
+Data/SILO
+Data/Timeseries
+Data/HRS
+Data_old
+Scripts_old
+Results/HRS_MDB_WB.Rds

@@ -1,82 +1,94 @@
 library(tidyverse)
 library(lubridate)
-library(zoo)
-
-source('R/StorageDischargeFunctions.R')
+# library(zoo)
 
 # HRS Station Data
-hrs = read_csv('Data/hrs_se_ext_attr.csv')
+hrs = read_csv('Data/hrs_mdb_station_ext_attrs.csv')
 
 # Load in data for these stations
-hrs_data = lapply(hrs$Number, function(x) {
-  df = read_csv(paste0('Data/TimeseriesAWAPer/', x, '.csv'), col_types = list(Q=col_double())) %>% 
-    select(Date, P, Q, AET) %>% 
-    mutate(Date = as_date(Date)) %>% 
-    mutate(QC_P=1) %>% 
-    filter(Date>='1990-01-01', Date <= '2018-12-31') %>% 
-    rename(Qmm = Q)
-  
-  Q_QC = read_csv(paste0('~/Dropbox (Sydney Uni)/HRS/220HRS/', x, '.csv'), skip=27,
-               col_names = c('Date', 'Q', 'QC_Q')) %>% 
-    mutate(QC_Q = as.integer(ifelse(QC_Q %in% c('A', 'B'), 1, 100)))
-  return(left_join(df, Q_QC))
+hrs_data = lapply(hrs$station_id, function(station) {
+  read_csv(file.path('Data', 'Timeseries', paste0(station, '.csv'))) %>% 
+    dplyr::rename(QC_Q = QC)
 })
-names(hrs_data) = hrs$Number
-save(hrs_data, file='Data/hrs_data.Rda')
+names(hrs_data) = hrs$station_id
+saveRDS(hrs_data, file='Data/hrs_data.Rds')
+
 #------------------------------------------------------------------------------#
 # Run for all
 #------------------------------------------------------------------------------#
+source('R/StorageDischargeFunctions.R')
 hrsSD = apply(hrs, MARGIN=1, function(x) {
-  station = x['Number']
-  area = as.numeric(x['area'])*86.4
+  station = x[['station_id']]
+  
   df = hrs_data[[station]] %>% 
-    filter(Q > 0, QC_Q==1, QC_P==1) %>% 
-    mutate(P = round(P, 2)) %>%
+    filter(Q > 0, QC_Q <= 2) %>% 
+    mutate(P = round(P, 1), QC_P = 1) %>% # SILO only has data to nearest 0.1 mm
     filter(month(Date) > 5 & month(Date) < 9)
-  sd = tryCatch({
-    storageDischargeDaily_pl(df, area)
-    }, error = function(e) {
-    print(paste('Station', station, 'failed'))
-    return(NULL)})
+  
+  if(station == '422202B') {
+    # data point prevents fitting
+    df = df %>% filter(!Date %in% as.Date(c('1998-08-31', '2005-07-03')))
+  }
+
+  sd = storageDischargeDaily_pl(df)
+  if(is.na(sd$a)) print(paste('Station', station, 'failed'))
+  
   return(sd)
 })
-names(hrsSD) = hrs$Number
+names(hrsSD) = hrs$station_id
 
 # HRS Parameter sets
-hrsPars = tibble(Number = names(hrsSD),
-                 a = sapply(hrsSD, function(x) x$a),
-                 b = sapply(hrsSD, function(x) x$b),
-                 n = sapply(hrsSD, function(x) x$n),
-                 r2 = sapply(hrsSD, function(x) x$r2)) %>% 
+
+hrsPars = lapply(hrsSD, function(x) {
+  unlist(x[c('a', 'a_std', 'b', 'b_std', 'n', 'r2')])
+})  %>% 
+  bind_rows('.id' = 'station_id') %>% 
   mutate(b = if_else(is.na(b), 1, b))
 
 # Calculate S using min and max observed Q
-storagePowerLaw = bind_rows(hrs_data, .id='Number') %>%
-  filter(Qmm>0, QC_Q==1) %>% 
+storagePowerLaw = bind_rows(hrs_data, .id='station_id') %>%
+  filter(station_id %in% hrsPars$station_id) %>% 
+  filter(Q > 0, QC_Q <= 2) %>% 
   mutate(Year = year(Date)) %>% 
-  group_by(Number, Year) %>% 
-  summarise(Qmin = min(Qmm, na.rm=TRUE),
-            Qavg = mean(Qmm, na.rm=TRUE),
-            Qmax = max(Qmm, na.rm=TRUE),
+  group_by(station_id, Year) %>% 
+  summarise(Qmin = min(Q, na.rm=TRUE),
+            Qavg = mean(Q, na.rm=TRUE),
+            Qmax = max(Q, na.rm=TRUE),
             .groups = 'drop') %>% 
-  group_by(Number) %>% 
+  group_by(station_id) %>% 
   summarise(Qmin = mean(Qmin),
             Qavg = mean(Qavg),
             Qmax = mean(Qmax),
             .groups = 'drop') %>% 
   left_join(hrsPars, .) %>%
   rowwise() %>% 
-  mutate(S = integrate(S_pl_int, Qmin, Qmax, a, b)$value,
-         Smin = -integrate(S_pl_int, Qmin, Qavg, a, b)$value,
-         Smax = integrate(S_pl_int, Qavg, Qmax, a, b)$value) %>% 
+  mutate(S = ifelse(!is.na(a), integrate(S_pl_int, Qmin, Qmax, a, b)$value, NA),
+         Smin = ifelse(!is.na(a), -integrate(S_pl_int, Qmin, Qavg, a, b)$value, NA),
+         Smax = ifelse(!is.na(a), integrate(S_pl_int, Qavg, Qmax, a, b)$value, NA)) %>% 
   arrange(desc(S))
 
-write_csv(storagePowerLaw, 'Data/Results/HRS_se_SD_PowerLaw.csv')
+write_csv(storagePowerLaw, 'Results/HRS_MDB_SD_PowerLaw.csv')
+#storagePowerLaw = read_csv('Results/HRS_MDB_SD_PowerLaw.csv')
 
 hrs_fdf = lapply(hrsSD, function(x) x$fdf) %>% 
-  bind_rows(.id='Number')
-write_csv(hrs_fdf, 'Data/Results/HRS_se_fdf.csv')
+  bind_rows(.id='station_id')
+write_csv(hrs_fdf, 'Results/HRS_MDB_SD_fdf.csv')
 
 hrs_fdfBin = lapply(hrsSD, function(x) x$fdfBin) %>% 
-  bind_rows(.id='Number')
-write_csv(hrs_fdfBin, 'Data/Results/HRS_se_fdfBin.csv')
+  bind_rows(.id='station_id')
+write_csv(hrs_fdfBin, 'Results/HRS_MDB_SD_fdfBin.csv')
+
+summary(storagePowerLaw$S)
+
+ggplot(storagePowerLaw, aes(S)) +
+  geom_histogram()
+
+# Plot together
+q_dq_p = ggplot() +
+  geom_point(data=hrs_fdf, aes(Qavg, `-dQ`)) +
+  geom_point(data=hrs_fdfBin, aes(Qmean, dQmean), col='red') +
+  facet_wrap(~Number, ncol=6) +#, scales='free') +
+  labs(x=expression(ln~Q~(mm.day^-1)), y=expression(ln~-dQdt~(mm.day^-2))) +
+  scale_x_continuous(trans='log', labels = scales::trans_format("log", scales::math_format(10^.x))) +
+  scale_y_continuous(trans='log', labels = scales::trans_format("log", scales::math_format(10^.x)))
+q_dq_p

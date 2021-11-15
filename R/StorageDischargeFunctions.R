@@ -37,11 +37,11 @@ gg_color_hue <- function(n) {
 }
 
 # Binning as described in Kirchner 2009
-kirchnerBin = function(x) {
+kirchnerBin = function(fdf) {
   # x: Pass the filtered dataframe
   
   # Copy the df and arrange by highest Q to lowest
-  tmp = x %>% 
+  tmp = fdf %>% 
     arrange(desc(Q))
   
   # Take the log of Q and find out 1% of the range
@@ -60,9 +60,9 @@ kirchnerBin = function(x) {
     # Calculate the range of Q
     lRange = diff(range(Qlog[i:j]))
     
-    # If the two points don't exceed the 1% of the logarithmic Q range
+    # Delimit bins that span at least 1% of the logarithmic range of Q
     # add more points until it does
-    while(lRange < Qrange & j<length(Qlog)) {
+    while(lRange <= Qrange & j < length(Qlog)) {
       j = j + 1
       if(j>length(Qlog)) break
       lRange = diff(range(Qlog[i:j]))
@@ -97,6 +97,119 @@ kirchnerBin = function(x) {
   }
   return(tmp)
 }
+
+storageDischargeDaily_pl  = function(df, area=86.4) {
+  # df: a table with Date, Q, P, QC_Q, QC_P
+  # area of the catchment if Q is in m3/s
+  
+  # Time series of Q
+  n = nrow(df)
+  Qt = df$Q
+  # Time series of Qt-1
+  Qtm1 = c(NA, Qt[1:(n-1)])
+  # Vector of dates
+  Dt = df$Date
+  # Vector of dates Dt-1
+  Dtm1 = c(as.Date(NA), Dt[1:(n-1)])
+  
+  # Determine dQ, dt and Qavg. dt should always be 1 day
+  pdf = df %>%
+    mutate(`-dQ` = Qtm1 - Qt,
+           dt    = -as.integer(Dtm1-Dt),
+           Qavg  = (Qtm1 + Qt)/2) %>%
+    mutate(`-dQ` = (`-dQ`*86.4/area),
+           Q     = (Q*86.4/area),
+           Qavg  = (Qavg*86.4/area)) %>%
+    filter(abs(`-dQ`) >= (0.001 * 86.4/area))
+  
+  rain_days = which(pdf$P>0)
+  pFilter = unique(c(rain_days, rain_days + 1))
+  
+  # Filter
+  fdf = pdf %>% 
+    slice(-pFilter) %>%
+    filter(!is.na(P),
+           !is.na(Qavg),
+           QC_Q %in% c(1,2),
+           QC_P %in% c(1,2),
+           dt==1,
+           Qavg > 0)
+  
+  # Binning using the Kirchner method
+  fdf = kirchnerBin(fdf)
+  
+  # Filter using Kirchner test criterion std.error(-dQ/dt) <= mean(dQ/dt)/2
+  fdfBin = fdf %>% 
+    group_by(Bin) %>% 
+    summarise(Qmean  = mean(Qavg),
+              Qstd   = std(Qavg),
+              dQmean = mean(`-dQ`),
+              dQstd  = std(`-dQ`),
+              n      = n(),
+              .groups = 'drop') %>% 
+    filter(!is.na(Bin))
+  
+  if(nrow(fdfBin) > 0) {
+    # Power law function
+    # ln(-dQ/dt) = -dQ/dt = a*Q^b
+    pwl_dQdt = lm(log(dQmean)~log(Qmean),
+                  data=fdfBin %>% filter(dQmean>0),
+                  weights = 1/(log(Qstd)^2))
+    pwl_dQdt_summary = summary(pwl_dQdt)
+    
+    a = pwl_dQdt_summary$coefficients[1,1]
+    a_std = pwl_dQdt_summary$coefficients[1,2]
+    b = pwl_dQdt_summary$coefficients[2,1]
+    b_std = pwl_dQdt_summary$coefficients[2,2]
+    
+    # Plots
+    pl_p_title = paste0('ln(-dQ/dt) = ',round(a, 2),' + ', round(b, 2), '.ln(Q), R2 = ', 
+                        round(pwl_dQdt_summary$adj.r.squared,2))
+    pl_p = ggplot() +
+      geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
+      geom_point(data=fdfBin, aes(Qmean, dQmean), col='red', size=0.5) + 
+      labs(y=expression(ln~-dQdt~(mm.day^-2)), x=expression(ln~Q~(mm.day^-1))) +
+      geom_line(aes(exp(pwl_dQdt$model$`log(Qmean)`), exp(pwl_dQdt$fitted.values)), col='green') +
+      scale_x_continuous(trans='log', breaks=c(0.001,0.1,1,10)) + scale_y_continuous(trans='log', breaks=c(0.001, 0.01, 0.1, 1)) +
+      theme_bw() +
+      ggtitle(pl_p_title)
+    
+    out = list(fdf=fdf,
+               fdfBin=fdfBin,
+               a = a,
+               a_std = a_std,
+               b = b,
+               b_std = b_std,
+               n = sum(fdfBin$n),
+               r2 = round(pwl_dQdt_summary$adj.r.squared, 2),
+               pl_p = pl_p)
+    
+  } else {
+    pl_p = ggplot() +
+      geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
+      #geom_point(data=fdfBin, aes(Qmean, dQmean), col='red', size=0.5) + 
+      labs(y=expression(ln~-dQdt~(mm.day^-2)), x=expression(ln~Q~(mm.day^-1))) +
+      scale_x_continuous(trans='log', breaks=c(0.001,0.1,1,10)) + scale_y_continuous(trans='log', breaks=c(0.001, 0.01, 0.1, 1)) +
+      theme_bw() 
+    
+    out = list(fdf=fdf,
+               fdfBin=fdfBin,
+               a = NA,
+               a_std = NA,
+               b = NA,
+               b_std = NA,
+               n = 0,
+               r2 = NA,
+               pl_p = pl_p)
+  }
+    
+  return(out)
+}
+
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
+#------------------------------------------------------------------------------#
 
 # Function to calculate the storage-discharge relationship at the hourly level
 # Requires that you have filtered to between sunrise and sunset
@@ -361,79 +474,3 @@ storageDischargeDaily  = function(df, area=86.4) {
              c3 = c3)
   return(out)
 }
-
-storageDischargeDaily_pl  = function(df, area=86.4) {
-  # df: a table with Date, Q, P, QC_Q, QC_P
-  # area of the catchment if Q is in m3/s
-  
-  # Time series of Q
-  Qt = df$Q
-  # Time series of Qt-1
-  Qtm1 = c(NA, df$Q[1:(nrow(df)-1)])
-  # Vector of dates
-  Dt = df$Date
-  # Vector of dates Dt-1
-  Dtm1 = c(NA, df$Date[1:(nrow(df)-1)])
-  
-  # Determine dQ, dt and Qavg. dt should always be 1 day
-  pdf = df %>%
-    mutate(`-dQ`= Qtm1-Qt,
-           dt   = as.integer(Dt-Dtm1),
-           Qavg = round((Qtm1 + Qt)/2, 3)) %>%
-    mutate(`-dQ` = `-dQ`*86.4/area,
-           Q     = Q*86.4/area,
-           Qavg  = Qavg*86.4/area)
-  
-  pFilter = unique((c(which(pdf$P>0), which(pdf$P>0)+1)))
-  
-  # Filter
-  fdf = pdf %>% 
-    slice(-pFilter) %>%
-    filter(!is.na(P),
-           !is.na(Qavg),
-           QC_Q %in% c(1,2),
-           QC_P %in% c(1,2,26),
-           dt==1) 
-  # Binning using the Kirchner method
-  fdf = kirchnerBin(fdf)
-  
-  # Filter using Kirchner test criterion std.error(-dQ/dt) <= mean(dQ/dt)/2
-  fdfBin = fdf %>% 
-    group_by(Bin) %>% 
-    summarise(Qmean  = mean(Qavg),
-              Qstd   = std(Qavg),
-              dQmean = mean(`-dQ`),
-              dQstd  = std(`-dQ`),
-              n      = n(),
-              .groups = 'drop') %>% 
-    filter(!is.na(Bin))
-  
-  
-  # Power law function
-  # ln(-dQ/dt) = -dQ/dt = a*Q^b
-  pwl_dQdt = lm(log(dQmean)~log(Qmean), data=fdfBin %>% filter(dQmean>0), weights = 1/(log(Qstd)^2))
-  a = unname(pwl_dQdt$coefficients[1])
-  b = unname(pwl_dQdt$coefficients[2])
-  
-  # Plots
-  pl_p_title = paste0('ln(-dQ/dt) = ',round(a, 2),' + ', round(b, 2), '.ln(Q), R2 = ', 
-                      round(summary(pwl_dQdt)$adj.r.squared,2))
-  pl_p = ggplot() +
-    geom_point(data=fdf %>% filter(`-dQ`>0), aes(Qavg, `-dQ`), size=0.5) +
-    geom_point(data=fdfBin, aes(Qmean, dQmean), col='red', size=0.5) + 
-    labs(y='ln -dQdt (mm/day)', x='ln Q (mm/day)') +
-    geom_line(aes(exp(pwl_dQdt$model$`log(Qmean)`), exp(pwl_dQdt$fitted.values)), col='green') +
-    scale_x_continuous(trans='log', breaks=c(0.001,0.1,1,10)) + scale_y_continuous(trans='log', breaks=c(0.001, 0.01, 0.1, 1)) +
-    theme_bw() +
-    ggtitle(pl_p_title)
-  
-  out = list(fdf=fdf,
-             fdfBin=fdfBin,
-             a = a,
-             b = b,
-             n = sum(fdfBin$n),
-             r2 = round(summary(pwl_dQdt)$adj.r.squared,2),
-             pl_p = pl_p)
-  return(out)
-}
-
